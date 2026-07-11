@@ -1,0 +1,14 @@
+-dontwarn
+-dontnote
+-dontshrink
+-dontoptimize
+-verbose
+-printmapping build/obfuscated/mapping.txt
+-keepattributes *Annotation*,Signature,LocalVariableTable,LocalVariableTypeTable,SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
+-repackageclasses net.dragonblockinfinity.obf
+-allowaccessmodification
+-useuniqueclassmembernames
+-overloadaggressively
+-keepparameternames
+-keepnames class *

@@ -1,0 +1,106 @@
+plugins {
+    id 'net.neoforged.moddev' version '2.0.107'
+}
+
+version = mod_version
+group = mod_group_id
+
+
+repositories {
+    mavenCentral()
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = neo_version
+
+    parchment {
+        minecraftVersion = parchment_minecraft_version
+        mappingsVersion = parchment_mappings_version
+    }
+
+    runs {
+        client {
+            client()
+        }
+        data {
+            data()
+        }
+        server {
+            server()
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+configurations {
+    proguard
+}
+
+dependencies {
+    proguard 'com.guardsquare:proguard-base:7.4.2'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+def obfuscateJarTask = tasks.register('obfuscateJar', JavaExec) {
+    group = 'build'
+    description = 'Obfuscates the compiled mod jar with ProGuard to make decompiled output harder to read.'
+    dependsOn tasks.named('jar')
+
+    classpath = configurations.proguard
+    mainClass = 'proguard.ProGuard'
+
+    def inputJar = tasks.named('jar').get().archiveFile.get().asFile.absolutePath
+    def outputJar = layout.buildDirectory.file("obfuscated/Dragon Block Infinity-${project.version}.jar")
+
+    doFirst {
+        mkdir(layout.buildDirectory.dir('obfuscated'))
+    }
+
+    args = [
+        '@proguard-rules.pro',
+        '-injars', inputJar,
+        '-outjars', outputJar.get().asFile.absolutePath,
+        '-libraryjars', "${System.getProperty('java.home')}/jmods"
+    ]
+}
+
+tasks.named('build') {
+    dependsOn obfuscateJarTask
+}
+
+tasks.named('assemble') {
+    dependsOn obfuscateJarTask
+}
+
+def dependenciesDir = layout.projectDirectory.dir('dependencies')
+
+def neoforgeVersion = project.findProperty('neo_version') ?: 'unknown'
+
+def copyNeoForgeDependency = tasks.register('copyNeoForgeDependency') {
+    group = 'build'
+    description = 'Copies the NeoForge dependency metadata into the dependencies folder.'
+    outputs.upToDateWhen { false }
+
+    doLast {
+        def outDir = dependenciesDir.asFile
+        mkdir(outDir)
+        def file = new File(outDir, "neoforge-${neoforgeVersion}.txt")
+        file.text = "NeoForge version ${neoforgeVersion}\n"
+        file.text += "Source: gradle.properties\n"
+        file.text += "Purpose: dependency metadata for the mod build\n"
+    }
+}
+
+tasks.named('build') {
+    dependsOn copyNeoForgeDependency
+}
