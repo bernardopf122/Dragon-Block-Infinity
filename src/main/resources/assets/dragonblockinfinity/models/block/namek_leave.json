@@ -1,0 +1,6 @@
+{
+    "parent": "block/leaves",
+    "textures": {
+        "all": "dragonblockinfinity:block/namek_leave"
+    }
+}

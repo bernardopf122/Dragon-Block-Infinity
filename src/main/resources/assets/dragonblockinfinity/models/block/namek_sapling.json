@@ -1,0 +1,6 @@
+{
+    "parent": "block/cross",
+    "textures": {
+        "cross": "dragonblockinfinity:block/namek_sapling"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "parent": "block/cube_collumn",
+    "textures": {
+        "end": "dragonblockinfinity:block/namek_log_top",
+        "side": "dragonblockinfinity:block/namek_log_side"
+    }
+}

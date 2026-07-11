@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "dragonblockinfinity:block/namek_log",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "dragonblockinfinity:block/namek_log"
+    },
+    "axis=z": {
+      "model": "dragonblockinfinity:block/namek_log",
+      "x": 90
+    }
+  }
+}
